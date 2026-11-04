@@ -168,6 +168,35 @@ szachy-online/
 └─ package.json
 ```
 
+## Rozwiązywanie problemów
+
+### Pusta strona albo status „Brak połączenia z serwerem”
+
+Klient w lobby pokazuje pigułkę ze stanem połączenia (zielona = działa, czerwona = brak).
+Jeśli jest czerwona, przeglądarka nie może otworzyć WebSocketu do serwera. Najczęstsze przyczyny:
+
+- **serwer nie działa** — w terminalu musi być uruchomione `npm start` i nie może mieć błędów
+- **Codespaces: port jest prywatny** — w zakładce **Ports** kliknij prawym na port 3000 →
+  **Port Visibility → Public**. Bez tego proxy GitHuba potrafi nie przepuścić połączenia WebSocket.
+- **zły adres** — otwieraj adres z numerem portu (`...-3000.app.github.dev`), nie inny.
+
+### Szybki test, czy serwer odpowiada
+
+Otwórz w przeglądarce adres serwera z końcówką `/health`:
+
+```
+http://localhost:3000/health
+https://TWOJ-ADRES/health
+```
+
+Jeśli zobaczysz `{"ok":true,"rooms":0}`, to serwer i przekierowanie portu działają —
+problem jest wtedy po stronie WebSocketu (najczęściej widoczność portu w Codespaces).
+
+### Chcę zobaczyć, co dokładnie się dzieje
+
+Naciśnij `F12` → zakładka **Console**. Błędy JavaScriptu pokażą się tam, a dodatkowo
+aplikacja wypisuje je w pigułce statusu w lobby.
+
 ## Bezpieczeństwo i prywatność
 
 - Serwer waliduje każdy ruch — nielegalne ruchy są odrzucane.

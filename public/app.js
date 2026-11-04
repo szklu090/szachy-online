@@ -3,6 +3,16 @@
  * ============================================================ */
 import { Chess } from './chess.js';
 
+// Zeby bledy ladowania nie konczyly sie cicha, pusta strona - pokaz je w statusie.
+window.addEventListener('error', (e) => {
+  try {
+    const t = document.getElementById('connText');
+    const box = document.getElementById('connStatus');
+    if (t) t.textContent = 'Błąd aplikacji: ' + (e.message || 'nieznany');
+    if (box) box.classList.add('err');
+  } catch {}
+});
+
 const GLYPH = { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' };
 const FILES = 'abcdefgh';
 
@@ -42,21 +52,52 @@ function loadLocal() {
 }
 
 /* ---------- websocket ---------- */
+let retryDelay = 1000;
+
+function setLobbyStatus(state, text) {
+  const box = el('connStatus');
+  if (!box) return;
+  box.classList.toggle('ok', state === 'ok');
+  box.classList.toggle('err', state === 'err');
+  if (text) el('connText').textContent = text;
+  const off = state !== 'ok';
+  if (el('createBtn')) el('createBtn').disabled = off;
+  if (el('joinBtn')) el('joinBtn').disabled = off;
+}
+
+function scheduleReconnect() {
+  clearTimeout(S.reconnectTimer);
+  S.reconnectTimer = setTimeout(connect, retryDelay);
+  retryDelay = Math.min(retryDelay * 2, 10000);
+}
+
 function connect() {
+  clearTimeout(S.reconnectTimer);
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
   const url = `${proto}//${location.host}`;
-  S.ws = new WebSocket(url);
 
-  S.ws.addEventListener('open', () => {
+  let ws;
+  try {
+    ws = new WebSocket(url);
+  } catch (e) {
+    setLobbyStatus('err', 'Nie udało się otworzyć połączenia: ' + e.message);
+    scheduleReconnect();
+    return;
+  }
+  S.ws = ws;
+
+  ws.addEventListener('open', () => {
     S.connected = true;
+    retryDelay = 1000;
     el('connBanner').hidden = true;
+    setLobbyStatus('ok', 'Połączono z serwerem');
     flushQueue();
     if (S.shouldReconnect && S.room) {
       send({ t: 'join', room: S.room, name: S.name, clientId: S.clientId });
     }
   });
 
-  S.ws.addEventListener('message', (ev) => {
+  ws.addEventListener('message', (ev) => {
     let msg;
     try {
       msg = JSON.parse(ev.data);
@@ -66,17 +107,18 @@ function connect() {
     handle(msg);
   });
 
-  S.ws.addEventListener('close', () => {
+  ws.addEventListener('close', () => {
     S.connected = false;
-    if (S.shouldReconnect) {
+    if (S.room) {
       el('connBanner').hidden = false;
-      clearTimeout(S.reconnectTimer);
-      S.reconnectTimer = setTimeout(connect, 1500);
+    } else {
+      setLobbyStatus('err', 'Brak połączenia z serwerem — ponawiam próbę…');
     }
+    scheduleReconnect();
   });
 
-  S.ws.addEventListener('error', () => {
-    try { S.ws.close(); } catch {}
+  ws.addEventListener('error', () => {
+    try { ws.close(); } catch {}
   });
 }
 
@@ -795,6 +837,9 @@ function lobbyMsg(text, err) {
 
 /* ---------- start ---------- */
 loadLocal();
+el('connText').textContent = 'Łączenie z serwerem…';
+el('createBtn').disabled = true;
+el('joinBtn').disabled = true;
 connect();
 
 const params = new URLSearchParams(location.search);

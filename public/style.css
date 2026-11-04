@@ -89,6 +89,32 @@ label input, label select { margin-top: 6px; }
 .msg { min-height: 18px; font-size: 13px; color: #ffb3ae; margin: 12px 0 0; }
 .msg.ok { color: var(--ok); }
 
+.conn-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  margin: 0 0 18px;
+}
+.conn-status::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d9534f;
+  flex: 0 0 9px;
+  box-shadow: 0 0 0 3px rgba(217,83,79,.18);
+}
+.conn-status.ok { color: var(--text); }
+.conn-status.ok::before { background: var(--ok); box-shadow: 0 0 0 3px rgba(67,181,129,.18); }
+.conn-status.err { color: #ffb3ae; border-color: #6b3339; }
+.conn-status.err::before { background: #d9534f; }
+
 /* ---------- GRA ---------- */
 .game {
   display: grid;
