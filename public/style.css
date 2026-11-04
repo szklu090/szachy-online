@@ -18,6 +18,9 @@
 
 * { box-sizing: border-box; }
 
+/* Atrybut hidden musi wygrywać z regułami display: grid/flex poniżej. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
