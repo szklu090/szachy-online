@@ -1,0 +1,24 @@
+name: testy
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalacja zaleznosci
+        run: npm ci
+
+      - name: Testy silnika, regul i serwera online
+        run: npm test

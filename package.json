@@ -1,0 +1,21 @@
+{
+  "name": "szachy-online",
+  "version": "1.0.0",
+  "description": "Szachy online (multiplayer przez internet) - serwer Node.js + WebSocket + klient w przegladarce",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/perft.js && node test/engine.js && node test/online.js",
+    "test:perft": "node test/perft.js",
+    "test:engine": "node test/engine.js",
+    "test:online": "node test/online.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.18.0"
+  }
+}

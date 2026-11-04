@@ -1,0 +1,5 @@
+# Normalizacja koncow linii - w repozytorium zawsze LF (dziala i na Windows, i na Linuksie)
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary

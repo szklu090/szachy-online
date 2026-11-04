@@ -1,0 +1,14 @@
+# Blueprint dla Render (https://render.com) - darmowy plan obsluguje WebSockety.
+# W Renderze: New + -> Blueprint -> wybierz swoje repozytorium z GitHubem.
+services:
+  - type: web
+    name: szachy-online
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"

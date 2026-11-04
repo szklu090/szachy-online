@@ -1,0 +1,28 @@
+# Konfiguracja dla Fly.io (https://fly.io).
+# WAZNE: "app" musi byc unikalne na calym Fly.io - zmien nazwe ponizej
+# albo uruchom `fly launch`, ktore wygeneruje wlasny plik.
+app = "szachy-online-zmien-na-swoja-nazwe"
+primary_region = "waw"
+
+[build]
+
+[env]
+  PORT = "3000"
+  HOST = "0.0.0.0"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  # WebSockety wymagaja wylaczonego buforowania odpowiedzi
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 200
+    soft_limit = 150
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

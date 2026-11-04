@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>♟ Szachy online</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♟</text></svg>" />
+</head>
+<body>
+
+<!-- ============ LOBBY ============ -->
+<section id="lobby" class="lobby">
+  <div class="card">
+    <h1>♟ Szachy online</h1>
+    <p class="sub">Zagraj z drugą osobą przez internet — wystarczy kod pokoju.</p>
+
+    <label>Twoje imię
+      <input id="nameInput" maxlength="20" placeholder="np. Szymon" autocomplete="nickname" />
+    </label>
+
+    <label>Tempo gry
+      <select id="tcSelect">
+        <option value="60,0">Bullet — 1 min</option>
+        <option value="180,0">Blitz — 3 min</option>
+        <option value="180,2">Blitz — 3 min + 2 s</option>
+        <option value="300,0">Blitz — 5 min</option>
+        <option value="300,2">Blitz — 5 min + 2 s</option>
+        <option value="600,0" selected>Rapid — 10 min</option>
+        <option value="600,5">Rapid — 10 min + 5 s</option>
+        <option value="900,10">Rapid — 15 min + 10 s</option>
+        <option value="1800,0">Klasyczne — 30 min</option>
+        <option value="unlimited">Bez zegara</option>
+      </select>
+    </label>
+
+    <button id="createBtn" class="primary big">Utwórz nowy pokój</button>
+
+    <div class="divider"><span>albo</span></div>
+
+    <label>Kod pokoju
+      <input id="roomInput" maxlength="6" placeholder="np. K7QM2P" autocapitalize="characters" />
+    </label>
+    <button id="joinBtn" class="big">Dołącz do pokoju</button>
+
+    <p id="lobbyMsg" class="msg"></p>
+  </div>
+</section>
+
+<!-- ============ GRA ============ -->
+<main id="game" class="game" hidden>
+  <div class="board-area">
+    <div id="board" class="board"></div>
+    <div id="promo" class="promo" hidden>
+      <div class="promo-box">
+        <p>Wybierz figurę</p>
+        <div class="promo-choices" id="promoChoices"></div>
+      </div>
+    </div>
+    <div id="resultBanner" class="result-banner" hidden></div>
+  </div>
+
+  <aside class="panel">
+    <header class="panel-head">
+      <div>
+        <span class="room-label">Pokój</span>
+        <strong id="roomCode">—</strong>
+      </div>
+      <div class="head-buttons">
+        <button id="copyBtn" class="ghost" title="Kopiuj link do pokoju">Link</button>
+        <button id="leaveBtn" class="ghost" title="Wyjdź z pokoju">Wyjdź</button>
+      </div>
+    </header>
+
+    <div id="connBanner" class="conn-banner" hidden>Rozłączono — próbuję połączyć ponownie…</div>
+
+    <div class="players">
+      <div class="player" id="playerB">
+        <div class="pinfo"><span class="dot"></span><span class="pname">—</span></div>
+        <div class="pclock" id="clockB">—</div>
+      </div>
+      <div class="player" id="playerW">
+        <div class="pinfo"><span class="dot"></span><span class="pname">—</span></div>
+        <div class="pclock" id="clockW">—</div>
+      </div>
+    </div>
+
+    <div id="status" class="status">Łączenie…</div>
+
+    <div class="moves-wrap">
+      <div class="moves-head"><span>Posunięcia</span><button id="flipBtn" class="ghost small">Obróć planszę</button></div>
+      <ol id="moveList" class="moves"></ol>
+    </div>
+
+    <div class="actions">
+      <button id="undoBtn" class="ghost">↶ Cofnij</button>
+      <button id="drawBtn" class="ghost">½ Remis</button>
+      <button id="resignBtn" class="danger">⚐ Poddaj się</button>
+      <button id="rematchBtn" class="ghost" hidden>↻ Rewanż</button>
+      <button id="saveBtn" class="ghost">💾 Zapisz</button>
+      <button id="loadBtn" class="ghost">📂 Wczytaj</button>
+      <input id="loadInput" type="file" accept=".json,application/json" hidden />
+    </div>
+
+    <div class="chat">
+      <div id="chatLog" class="chat-log"></div>
+      <form id="chatForm" class="chat-form">
+        <input id="chatInput" maxlength="400" placeholder="Napisz wiadomość…" autocomplete="off" />
+        <button type="submit" class="ghost">Wyślij</button>
+      </form>
+    </div>
+  </aside>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-box">
+      <h3 id="ovTitle">—</h3>
+      <p id="ovText">—</p>
+      <div class="ov-buttons" id="ovButtons"></div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>
